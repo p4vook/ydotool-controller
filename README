@@ -1,0 +1,3 @@
+Controller daemon & client for ydotool, providing ability to run ydotool as ordinary user
+
+Notice: currently group with access to controller is hardcoded.
