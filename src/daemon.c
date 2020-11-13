@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
+#include <grp.h>
 #include <error.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
@@ -28,9 +29,11 @@ int main() {
         memset(&address, 0, sizeof(struct sockaddr_un));
         address.sun_family = AF_UNIX;
         strncpy(address.sun_path, SOCKET_PATH, sizeof(address.sun_path) - 1);
+        struct group* owner_group;
         handle(bind(fd_listener, (const struct sockaddr*)&address, sizeof(struct sockaddr_un)), "bind", 1);
         handle(listen(fd_listener, 16), "listen", 1);
-        handle(chown(SOCKET_PATH, -1, 10), "chown", 1);
+        handle((owner_group = getgrnam(OWNER_GROUP_NAME)) == NULL, "getgrpnam", 1);
+        handle(chown(SOCKET_PATH, -1, owner_group->gr_gid), "chown", 1);
         handle(chmod(SOCKET_PATH, 660), "chmod", 1);
         printf("Listening on socket %s\n", address.sun_path);
         int fd_client;
