@@ -1,0 +1,8 @@
+[Unit]
+Description=YdoTool controller daemon
+
+[Service]
+ExecStart=/usr/bin/ydotool_controllerd
+
+[Install]
+WantedBy=multiuser.target
